@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Life Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+        }
+        .dark-mode {
+            background-color: #1f2937;
+            color: white;
+        }
+        .dark-mode .card {
+            background-color: #374151;
+        }
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 font-sans">
+    <header class="bg-blue-600 text-white p-4 flex justify-between items-center shadow-lg">
+        <h1 class="text-2xl font-bold">Life Tracker</h1>
+        <button id="theme-toggle" class="px-3 py-1 bg-blue-500 rounded"><i class="fas fa-moon"></i> Dark Mode</button>
+    </header>
+
+    <div class="flex">
+        <nav class="w-64 bg-gray-200 dark:bg-gray-800 min-h-screen p-4">
+            <ul class="space-y-2">
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="habits"><i class="fas fa-check-circle"></i> Habit Tracker</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="goals"><i class="fas fa-target"></i> Goal Tracker</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="finance"><i class="fas fa-dollar-sign"></i> Finance Tracker</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="health"><i class="fas fa-heartbeat"></i> Health Tracker</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="journal"><i class="fas fa-book"></i> Journal</a></li>
+                <li><a href="#" class="nav-link block p-2 rounded hover:bg-blue-200 dark:hover:bg-gray-700" data-tab="calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
+            </ul>
+        </nav>
+
+        <main class="flex-1 p-6">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2 class="text-3xl font-bold mb-6">Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Habits Completed Today</h3>
+                        <p id="habits-today" class="text-2xl font-bold">0</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/98bb9ddb-a5ca-4294-a8bd-d5c1152e1834.png" alt="Animated chart showing habit completion streaks with colorful bars rising upwards in a minimalist interface" class="mt-2 rounded" />
+                    </div>
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Goals Achieved</h3>
+                        <p id="goals-achieved" class="text-2xl font-bold">0</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/aa9e9826-5d59-4417-909c-c9454804fb72.png" alt="Motivational progress bar filling up with stars and confetti in a bright, celebratory design" class="mt-2 rounded" />
+                    </div>
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Financial Balance</h3>
+                        <p id="finance-balance" class="text-2xl font-bold">$0</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/c8cb6cde-347c-4760-bec5-d446f34b8f27.png" alt="Pie chart illustrating budget categories with green slices for savings and red for expenses in a clean, professional layout" class="mt-2 rounded" />
+                    </div>
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Health Score</h3>
+                        <p id="health-score" class="text-2xl font-bold">0/10</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/80db2442-b343-4192-9423-cb0f2a8f4e47.png" alt="Fitness meter gauge rising from zero to ten with workout icons and heart symbols in a vibrant health-themed palette" class="mt-2 rounded" />
+                    </div>
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Journal Entries</h3>
+                        <p id="journal-count" class="text-2xl font-bold">0</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f1de1012-907f-4f49-a84d-76cf54852bde.png" alt="Open diary page with handwritten notes and colorful bookmarks scattered around in a cozy, vintage style" class="mt-2 rounded" />
+                    </div>
+                    <div class="card bg-white dark:bg-gray-700 p-4 rounded shadow">
+                        <h3 class="text-lg font-semibold">Upcoming Events</h3>
+                        <p id="events-count" class="text-2xl font-bold">0</p>
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e762c53a-999b-4e43-926e-bdc84af56fca.png" alt="Calendar grid highlighting future dates with event markers and subtle illustrations of clocks and reminders" class="mt-2 rounded" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Habit Tracker Tab -->
+            <div id="habits" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Habit Tracker</h2>
+                <form id="habit-form" class="mb-4">
+                    <input type="text" id="habit-name" placeholder="New Habit" class="p-2 border rounded mr-2" required>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Add Habit</button>
+                </form>
+                <ul id="habit-list" class="space-y-2"></ul>
+            </div>
+
+            <!-- Goal Tracker Tab -->
+            <div id="goals" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Goal Tracker</h2>
+                <form id="goal-form" class="mb-4">
+                    <input type="text" id="goal-title" placeholder="Goal Title" class="p-2 border rounded mr-2" required>
+                    <textarea id="goal-desc" placeholder="Description" class="p-2 border rounded mr-2"></textarea>
+                    <input type="number" id="goal-progress" placeholder="Progress %" class="p-2 border rounded mr-2">
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Add Goal</button>
+                </form>
+                <ul id="goal-list" class="space-y-2"></ul>
+            </div>
+
+            <!-- Finance Tracker Tab -->
+            <div id="finance" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Finance Tracker</h2>
+                <form id="finance-form" class="mb-4">
+                    <input type="number" id="finance-amount" placeholder="Amount" class="p-2 border rounded mr-2" required>
+                    <select id="finance-type" class="p-2 border rounded mr-2">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Add Entry</button>
+                </form>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3>Balance Chart</h3>
+                        <canvas id="finance-chart"></canvas>
+                    </div>
+                    <div>
+                        <h3>Transactions</h3>
+                        <ul id="finance-list" class="space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Tracker Tab -->
+            <div id="health" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Health Tracker</h2>
+                <form id="health-form" class="mb-4">
+                    <input type="date" id="health-date" class="p-2 border rounded mr-2" required>
+                    <input type="number" id="health-weight" placeholder="Weight (lbs)" class="p-2 border rounded mr-2">
+                    <input type="number" id="health-workouts" placeholder="Workouts Done" class="p-2 border rounded mr-2">
+                    <select id="health-mood" class="p-2 border rounded mr-2">
+                        <option value="happy">Happy</option>
+                        <option value="neutral">Neutral</option>
+                        <option value="sad">Sad</option>
+                    </select>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Log Entry</button>
+                </form>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h3>Weight Chart</h3>
+                        <canvas id="health-chart"></canvas>
+                    </div>
+                    <div>
+                        <h3>Recent Logs</h3>
+                        <ul id="health-list" class="space-y-2"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journal Tab -->
+            <div id="journal" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Journal</h2>
+                <form id="journal-form" class="mb-4">
+                    <input type="date" id="journal-date" class="p-2 border rounded mr-2" required>
+                    <textarea id="journal-entry" placeholder="Your thoughts..." class="p-2 border rounded w-full" rows="4" required></textarea>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Save Entry</button>
+                </form>
+                <ul id="journal-list" class="space-y-2"></ul>
+            </div>
+
+            <!-- Calendar Tab -->
+            <div id="calendar" class="tab-content hidden">
+                <h2 class="text-3xl font-bold mb-6">Calendar</h2>
+                <div id="calendar-widget" class="mb-4"></div>
+                <form id="event-form" class="mb-4">
+                    <input type="date" id="event-date" class="p-2 border rounded mr-2" required>
+                    <input type="text" id="event-title" placeholder="Event Title" class="p-2 border rounded mr-2" required>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded"><i class="fas fa-plus"></i> Add Event</button>
+                </form>
+                <ul id="event-list" class="space-y-2"></ul>
+            </div>
+        </main>
+    </div>
+
+    <footer class="bg-blue-600 text-white text-center p-4">
+        © 2025 Life Tracker.
+    </footer>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
+        });
+
+        // Tab Navigation
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const tabId = e.target.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.add('hidden'));
+                document.getElementById(tabId).classList.remove('hidden');
+                navLinks.forEach(l => l.classList.remove('tab-active'));
+                e.target.classList.add('tab-active');
+            });
+        });
+
+        // Load from LocalStorage
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem('lifeTracker')) || {};
+            ['habits', 'goals', 'finance', 'health', 'journal', 'events'].forEach(key => {
+                if (!data[key]) data[key] = [];
+            });
+            localStorage.setItem('lifeTracker', JSON.stringify(data));
+            return data;
+        }
+        let data = loadData();
+
+        // Save Data
+        function saveData() {
+            localStorage.setItem('lifeTracker', JSON.stringify(data));
+        }
+
+        // Habit Tracker
+        function renderHabits() {
+            const habitList = document.getElementById('habit-list');
+            habitList.innerHTML = data.habits.map((h, i) => 
+                `<li class="flex justify-between items-center p-2 bg-white dark:bg-gray-700 rounded shadow">
+                    <span>${h.name} - Streak: ${h.streak}</span>
+                    <button onclick="completeHabit(${i})" class="px-3 py-1 bg-green-500 text-white rounded"><i class="fas fa-check"></i></button>
+                </li>`
+            ).join('');
+            updateDashboard();
+        }
+        document.getElementById('habit-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('habit-name').value;
+            data.habits.push({name, streak: 0});
+            saveData();
+            renderHabits();
+            e.target.reset();
+        });
+        function completeHabit(i) {
+            data.habits[i].streak++;
+            saveData();
+            renderHabits();
+        }
+
+        // Goal Tracker
+        function renderGoals() {
+            const goalList = document.getElementById('goal-list');
+            goalList.innerHTML = data.goals.map((g, i) => 
+                `<li class="p-2 bg-white dark:bg-gray-700 rounded shadow">
+                    <div class="flex justify-between items-center">
+                        <span>${g.title} - ${g.progress}%</span>
+                        <input type="range" min="0" max="100" value="${g.progress}" onchange="updateGoal(${i}, this.value)">
+                    </div>
+                    <p>${g.desc}</p>
+                </li>`
+            ).join('');
+            updateDashboard();
+        }
+        document.getElementById('goal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            data.goals.push({
+                title: document.getElementById('goal-title').value,
+                desc: document.getElementById('goal-desc').value,
+                progress: +document.getElementById('goal-progress').value
+            });
+            saveData();
+            renderGoals();
+            e.target.reset();
+        });
+        function updateGoal(i, progress) {
+            data.goals[i].progress = +progress;
+            saveData();
+            renderGoals();
+        }
+
+        // Finance Tracker
+        let balance = data.finance.reduce((sum, t) => sum + (t.type === 'income' ? t.amount : -t.amount), 0);
+        function renderFinance() {
+            document.getElementById('finance-balance').innerText = `$${balance.toFixed(2)}`;
+            const financeList = document.getElementById('finance-list');
+            financeList.innerHTML = data.finance.map(t => `<li class="p-2 bg-white dark:bg-gray-700 rounded shadow">${t.type}: $${t.amount.toFixed(2)}</li>`).join('');
+            const ctx = document.getElementById('finance-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Income', 'Expenses'],
+                    datasets: [{
+                        data: [
+                            data.finance.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0),
+                            data.finance.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+                        ],
+                        backgroundColor: ['#4ade80', '#f87171']
+                    }]
+                }
+            });
+            updateDashboard();
+        }
+        document.getElementById('finance-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const amount = +document.getElementById('finance-amount').value;
+            const type = document.getElementById('finance-type').value;
+            data.finance.push({amount, type});
+            balance = type === 'income' ? balance + amount : balance - amount;
+            saveData();
+            renderFinance();
+            e.target.reset();
+        });
+
+        // Health Tracker
+        function renderHealth() {
+            const healthList = document.getElementById('health-list');
+            healthList.innerHTML = data.health.map(h => 
+                `<li class="p-2 bg-white dark:bg-gray-700 rounded shadow">
+                    ${h.date}: Weight ${h.weight}lbs, Workouts ${h.workouts}, Mood ${h.mood}
+                </li>`
+            ).join('');
+            const ctx = document.getElementById('health-chart').getContext('2d');
+            const weights = data.health.map(h => h.weight).filter(w => w);
+            const dates = data.health.map(h => h.date).filter(d => d);
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Weight (lbs)',
+                        data: weights,
+                        borderColor: '#3b82f6'
+                    }]
+                }
+            });
+            const avgMood = data.health.length > 0 ? (data.health.reduce((sum, h) => sum + (h.mood === 'happy' ? 1 : h.mood === 'neutral' ? 0.5 : 0), 0) / data.health.length) * 10 : 0;
+            document.getElementById('health-score').innerText = `${Math.round(avgMood)}/10`;
+            updateDashboard();
+        }
+        document.getElementById('health-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            data.health.push({
+                date: document.getElementById('health-date').value,
+                weight: +document.getElementById('health-weight').value || 0,
+                workouts: +document.getElementById('health-workouts').value || 0,
+                mood: document.getElementById('health-mood').value
+            });
+            saveData();
+            renderHealth();
+            e.target.reset();
+        });
+
+        // Journal
+        function renderJournal() {
+            const journalList = document.getElementById('journal-list');
+            journalList.innerHTML = data.journal.map((j, i) => 
+                `<li class="p-2 bg-white dark:bg-gray-700 rounded shadow">
+                    <h4>${j.date}</h4>
+                    <p>${j.entry}</p>
+                </li>`
+            ).join('');
+            document.getElementById('journal-count').innerText = data.journal.length;
+            updateDashboard();
+        }
+        document.getElementById('journal-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            data.journal.push({
+                date: document.getElementById('journal-date').value,
+                entry: document.getElementById('journal-entry').value
+            });
+            saveData();
+            renderJournal();
+            e.target.reset();
+        });
+
+        // Calendar (Simplified)
+        function renderCalendar() {
+            const eventList = document.getElementById('event-list');
+            eventList.innerHTML = data.events.map(e => `<li class="p-2 bg-white dark:bg-gray-700 rounded shadow">${e.date}: ${e.title}</li>`).join('');
+            document.getElementById('events-count').innerText = data.events.length;
+            updateDashboard();
+        }
+        document.getElementById('event-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            data.events.push({
+                date: document.getElementById('event-date').value,
+                title: document.getElementById('event-title').value
+            });
+            saveData();
+            renderCalendar();
+            e.target.reset();
+        });
+
+        // Update Dashboard
+        function updateDashboard() {
+            document.getElementById('habits-today').innerText = data.habits.length;
+            document.getElementById('goals-achieved').innerText = data.goals.filter(g => g.progress >= 100).length;
+        }
+
+        // Initial Render
+        renderHabits();
+        renderGoals();
+        renderFinance();
+        renderHealth();
+        renderJournal();
+        renderCalendar();
+    </script>
+</body>
+</html>
+</content>
+</create_file>
