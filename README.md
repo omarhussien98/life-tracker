@@ -22,7 +22,7 @@ This project provides multiple trackers in a single dashboard to manage daily li
 - LocalStorage for offline persistence
 
 ##  Live Demo
-?? [View Project Here](https://omarhussien98.github.io/life-tracker/)
+[View Project Here](https://omarhussien98.github.io/life-tracker/)
 
 ##  How to Use
 1. Clone the repo or download files.  
